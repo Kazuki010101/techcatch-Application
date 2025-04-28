@@ -101,7 +101,7 @@ def recommend_articles(request):
     articles = Article.objects.filter(
         published_at__gte=one_week_ago
     ).order_by('-likes')[:20]  
-
+    print(articles)
     article_list = [
         {
             'id': article.id,
@@ -190,7 +190,6 @@ def trend_all_articles(request):
 def get_or_scrape_trend_articles(site_name, scraper_func):
     now_time = now()
     latest_article = TrendArticle.objects.filter(site=site_name).order_by('-scraped_at').first()
-
     if latest_article and (now_time - latest_article.scraped_at) < timedelta(hours=24):
         articles = TrendArticle.objects.filter(site=site_name).order_by('-likes')
     else:
@@ -218,7 +217,6 @@ def get_or_scrape_trend_articles(site_name, scraper_func):
         'likes': a.likes,
         'category': a.site.capitalize(), 
     } for a in articles]
-
     return serialized
 
 @api_view(['GET'])
