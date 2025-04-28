@@ -2,6 +2,7 @@ frontend/node_modules/
 frontend/.env
 frontend/build/
 
+information.txt
 db.sqlite3
 __pycache__/
 
