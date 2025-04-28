@@ -1,0 +1,100 @@
+/* ログイン・新規登録画面用 */
+
+.login-container {
+    max-width: 400px;
+    margin: 5rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .login-container h2 {
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    color: #333;
+  }
+  
+  .login-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .login-container input {
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  
+  .login-container button[type="submit"] {
+    padding: 0.8rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .login-container button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  /* ログイン↔登録切り替えボタン */
+  .login-container div p {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .login-container div p button {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+  }
+  
+  .login-container div p button:hover {
+    text-decoration: underline;
+  }
+  
+  /* エラーメッセージ */
+  .error {
+    color: red;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  
+
+  .spinner-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  /* .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #ccc;
+    border-top: 4px solid #333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  .spinner-text {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+   */

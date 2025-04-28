@@ -1,0 +1,73 @@
+.recommend-layout {
+  padding: 2rem;
+  background-color: #f9fafb;
+}
+
+.recommend-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1f2937;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+
+  animation: floatTitle 3s ease-in-out infinite;
+}
+
+@keyframes floatTitle {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+
+.recommend-section {
+  margin-bottom: 3rem;
+}
+
+.recommend-section h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.qiita-section h2 {
+  color: #55c500; 
+}
+
+.zenn-section h2 {
+  color: #3ea8ff; 
+}
+
+.note-section h2 {
+  color: #ffcc00; 
+}
+
+.recommend-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.2s;
+}
+
+.recommend-card:hover {
+  background-color: #f3f4f6;
+}
+
+.recommend-info {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 0.3rem;
+}
