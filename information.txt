@@ -1,0 +1,9 @@
+"""
+createsuperuser + Postgle
+username: kazuki_admin
+e-mail: kakazuki_yakyu@icloud.com
+pass: Kazuki123123789
+
+connect : psql "host=dpg-d01lmlje5dus73bav1eg-a.singapore-postgres.render.com port=5432 dbname=techcatch user=kazuki password=JS7pYYMkTmro583o2sZaT85BAATxrIjF sslmode=require"
+
+"""
