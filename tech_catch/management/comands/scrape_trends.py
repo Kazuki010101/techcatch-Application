@@ -3,15 +3,11 @@ from tech_catch.scraper import qiita, zenn, note
 from tech_catch.models import TrendArticle
 
 class Command(BaseCommand):
-    help = '24時間ごとに最新トレンドをスクレイプして保存する'
-
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS('トレンド更新開始...'))
+        self.stdout.write(self.style.SUCCESS('start update Trend'))
 
-        # まず全部削除
         TrendArticle.objects.all().delete()
 
-        # Qiitaスクレイプ
         qiita_articles = qiita.scrape_qiita_trend()
         for article in qiita_articles:
             TrendArticle.objects.create(
@@ -24,7 +20,6 @@ class Command(BaseCommand):
                 tags=article.get('tags', []),
             )
 
-        # Zennスクレイプ
         zenn_articles = zenn.scrape_zenn_trend()
         for article in zenn_articles:
             TrendArticle.objects.create(
@@ -37,7 +32,6 @@ class Command(BaseCommand):
                 tags=article.get('tags', []),
             )
 
-        # Noteスクレイプ
         note_articles = note.scrape_note_trend()
         for article in note_articles:
             TrendArticle.objects.create(
@@ -50,4 +44,4 @@ class Command(BaseCommand):
                 tags=article.get('tags', []),
             )
 
-        self.stdout.write(self.style.SUCCESS('トレンド更新完了 ✅'))
+        self.stdout.write(self.style.SUCCESS('Success Updata Trend'))
