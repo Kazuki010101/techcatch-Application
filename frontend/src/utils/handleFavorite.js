@@ -1,4 +1,4 @@
-import { fetchWithAuth } from './fetchWithAuth'; // 忘れず！
+import { fetchWithAuth } from './fetchWithAuth';
 
 export const handleFavorite = async (article, category, favorites, setFavorites) => {
   const isFavorite = favorites.some(fav => fav.url === article.url);
