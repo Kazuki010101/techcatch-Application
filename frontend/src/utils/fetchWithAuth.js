@@ -1,3 +1,5 @@
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export const fetchWithAuth = async (url, options = {}) => {
     let token = localStorage.getItem('access');
     if (!token) throw new Error('ログインしていません');
@@ -13,7 +15,7 @@ export const fetchWithAuth = async (url, options = {}) => {
     if (res.status === 401) {
       const refreshToken = localStorage.getItem('refresh');
       if (refreshToken) {
-        const refreshRes = await fetch("http://localhost:8000/api/token/refresh/", {
+        const refreshRes = await fetch(`${BASE_URL}/api/token/refresh/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ refresh: refreshToken }),

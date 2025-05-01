@@ -1,4 +1,5 @@
 import { fetchFavorites } from './fetchFavorite';
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export const fetchRecommendArticles = async (
   setQiitaArticles,
@@ -9,9 +10,9 @@ export const fetchRecommendArticles = async (
 ) => {
   try {
     const [qiitaRes, zennRes, noteRes, favoritesRes] = await Promise.allSettled([
-      fetch('http://localhost:8000/api/recommend/qiita/').then(res => res.json()),
-      fetch('http://localhost:8000/api/recommend/zenn/').then(res => res.json()),
-      fetch('http://localhost:8000/api/recommend/note/').then(res => res.json()),
+      fetch(`${BASE_URL}/api/recommend/qiita/`).then(res => res.json()),
+      fetch(`${BASE_URL}/api/recommend/zenn/`).then(res => res.json()),
+      fetch(`${BASE_URL}/api/recommend/note/`).then(res => res.json()),
       fetchFavorites()
     ]);
 

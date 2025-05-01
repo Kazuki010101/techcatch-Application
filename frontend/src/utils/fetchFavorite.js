@@ -1,8 +1,10 @@
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 import { fetchWithAuth } from './fetchWithAuth';
 
 export const fetchFavorites = async () => {
   try {
-    const res = await fetchWithAuth("http://localhost:8000/api/favorites/");
+    const res = await fetchWithAuth(`${BASE_URL}/api/favorites/`);
     if (res.ok) {
       const data = await res.json();
       return data.favorites || [];  

@@ -1,5 +1,7 @@
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export const loginUser = async (username, password) => {
-    const url = 'http://localhost:8000/api/token/';
+    const url = `${BASE_URL}/api/token/`;
     const body = JSON.stringify({ username, password });
   
     const res = await fetch(url, {

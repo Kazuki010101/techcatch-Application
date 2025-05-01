@@ -1,11 +1,12 @@
 import { fetchWithAuth } from './fetchWithAuth';
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export const handleFavorite = async (article, category, favorites, setFavorites) => {
   const isFavorite = favorites.some(fav => fav.url === article.url);
 
   try {
     if (isFavorite) {
-      const res = await fetchWithAuth("http://localhost:8000/api/favorites/", {
+      const res = await fetchWithAuth(`${BASE_URL}/api/favorites/`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: article.url })
@@ -17,7 +18,7 @@ export const handleFavorite = async (article, category, favorites, setFavorites)
         console.error('お気に入り削除失敗');
       }
     } else {
-      const res = await fetchWithAuth("http://localhost:8000/api/favorites/", {
+      const res = await fetchWithAuth(`${BASE_URL}/api/favorites/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

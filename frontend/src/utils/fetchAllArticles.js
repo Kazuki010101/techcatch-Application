@@ -1,3 +1,5 @@
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export const fetchAllArticles = async (
   query,
   setQiitaArticles,
@@ -24,7 +26,7 @@ export const fetchAllArticles = async (
 
   const fetchService = async (name, setArticles, setLoading) => {
     try {
-      const res = await fetch(`http://localhost:8000/api/scrape/${name}/?tags=${encodeURIComponent(query)}`);
+      const res = await fetch(`${BASE_URL}/api/scrape/${name}/?tags=${encodeURIComponent(query)}`);
       const data = await res.json();
       setArticles(data.articles || []);
     } catch (err) {
