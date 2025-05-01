@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import './Favorites.css';
-import { useNavigate } from 'react-router-dom';
 import { handleFavorite } from '../utils/handleFavorite';
 import { fetchFavorites } from '../utils/fetchFavorite';
 import { generateChartData } from '../utils/generateChartData';
@@ -14,7 +13,6 @@ const Favorites = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
   const [sortOption, setSortOption] = useState('likes');
-  const navigate = useNavigate();
 
   useEffect(() => {
     const loadFavorites = async () => {
