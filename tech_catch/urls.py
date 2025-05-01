@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import UserRegisterView, index
@@ -24,5 +24,6 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), 
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), 
     
-    path('', index, name='index'),
+    path('', index),
+    re_path(r'^.*$', index),
 ]
