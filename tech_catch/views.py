@@ -18,6 +18,9 @@ from .models import TrendArticle
 
 from .scraper import qiita, zenn, note
 
+def index(request):
+    return render(request, 'index.html')
+
 def scrape_qiita_and_get_articles(request):
     tag = request.GET.get("tags", "Python")
     articles = qiita.scrape_qiita(tag=tag)  

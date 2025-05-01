@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
+## データベースの管理
 
+## 収集した記事の
 class Article(models.Model):
     title = models.CharField(max_length=100)
     url = models.URLField(unique=True)
