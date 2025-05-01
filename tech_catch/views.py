@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.utils.timezone import now
+from django.views.generic import View
 
 from datetime import timedelta
 from django.utils import timezone
@@ -18,9 +19,10 @@ from .models import TrendArticle
 
 from .scraper import qiita, zenn, note
 
-def index(request):
-    return render(request, 'index.html')
-
+class IndexView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'index.html')
+    
 def scrape_qiita_and_get_articles(request):
     tag = request.GET.get("tags", "Python")
     articles = qiita.scrape_qiita(tag=tag)  

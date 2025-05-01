@@ -1,7 +1,7 @@
-from django.urls import path, re_path
+from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import UserRegisterView, index
+from .views import UserRegisterView
 
 urlpatterns = [
     path('scrape/qiita/', views.scrape_qiita_and_get_articles, name='scrape_qiita'),
@@ -24,5 +24,5 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), 
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), 
     
-    re_path(r'^.*$', index)
+    path('', index, name='index'),
 ]
