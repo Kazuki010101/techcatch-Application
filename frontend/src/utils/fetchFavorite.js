@@ -1,6 +1,5 @@
-const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
 import { fetchWithAuth } from './fetchWithAuth';
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export const fetchFavorites = async () => {
   try {
