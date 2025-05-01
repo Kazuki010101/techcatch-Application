@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import UserRegisterView
+from .views import UserRegisterView, index
 
 urlpatterns = [
     path('scrape/qiita/', views.scrape_qiita_and_get_articles, name='scrape_qiita'),
