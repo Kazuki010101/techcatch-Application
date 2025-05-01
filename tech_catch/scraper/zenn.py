@@ -100,3 +100,5 @@ def scrape_zenn_trend():
     url = "https://zenn.dev"
     articles = basic_scrapy_zenn(url=url)
     return articles
+
+

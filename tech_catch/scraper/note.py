@@ -1,161 +1,96 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
-import time
-import urllib.parse
-
-from datetime import timedelta, datetime
 import requests
+from bs4 import BeautifulSoup
 
-def basic_scrape_note(url):
-    options = Options()
-    options.add_argument('--headless') 
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
+def scrape_note_articles(url, article_selector, extract_meta_func, limit=10):
+    res = requests.get(url)
+    if res.status_code != 200:
+        return []
 
-    driver = webdriver.Chrome(options=options)
-
+    soup = BeautifulSoup(res.content, "html.parser")
     articles = []
+    count = 0
 
-    try:
-        driver.get(url)
-        time.sleep(3)
+    for article_tag in soup.select(article_selector):
+        if count >= limit:
+            break
 
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
-        count = 0
+        meta = extract_meta_func(article_tag)
+        if not meta:
+            continue
 
-        for article_tag in soup.select('div.m-timelineItemWrapper__itemWrapper'):
-            if count >= 5:
-                break
+        link = meta["link"]
+        detail_res = requests.get(link)
+        detail_soup = BeautifulSoup(detail_res.content, "html.parser")
+        body_container = detail_soup.select_one('div[data-name="body"]')
 
-            title_tag = article_tag.select_one('h3.m-noteBodyTitle__title')
-            link_tag = article_tag.select_one('a.m-largeNoteWrapper__link')
-            author_tag = article_tag.select_one('div.o-largeNoteSummary__userName')
-            date_tag = article_tag.select_one('div.o-largeNoteSummary__date')
-            like_tag = article_tag.select_one('span.pl-2.text-sm.text-text-secondary')
+        if body_container:
+            paragraphs = body_container.find_all('p')
+            body_texts = [p.get_text(strip=True) for p in paragraphs]
+            body_summary = " ".join(body_texts) if body_texts else "(本文なし)"
+        else:
+            body_summary = "(本文なし)"
 
-            if title_tag and link_tag:
-                title = title_tag.text.strip()
-                link = "https://note.com" + link_tag.get('href')
-                author = author_tag.text.strip() if author_tag else '著者不明'
-                date = date_tag.text.strip() if date_tag else '日付不明'
-                likes = int(like_tag.text.strip()) if like_tag else 0
+        if len(body_summary) >= 300:
+            body_summary = body_summary[:300]
 
-                driver.get(link)
-                time.sleep(2)
-                detail_soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-                body_container = detail_soup.select_one('div[data-name="body"]')
-
-                if body_container:
-                    paragraphs = body_container.find_all('p')
-                    if paragraphs:
-                        body_texts = [p.get_text(strip=True) for p in paragraphs]
-                        body_summary = " ".join(body_texts)
-                    else:
-                        body_summary = "(本文なし)"
-                else:
-                    body_summary = "(本文なし)"
-
-                if len(body_summary) >= 300:
-                    body_summary = body_summary[:300]
-
-                articles.append({
-                    "id": link,
-                    "title": title,
-                    "url": link,
-                    "author": author,
-                    "date": date,
-                    "body": body_summary,
-                    "likes": likes,
-                    "category": "Note"
-                })
-
-                count += 1
-
-    finally:
-        driver.quit()
-
+        articles.append({
+            **meta,
+            "body": body_summary,
+            "category": "Note"
+        })
+        count += 1
 
     return articles
+
+
+def extract_meta_trend(article_tag):
+    title_tag = article_tag.select_one('h3.m-noteBodyTitle__title')
+    link_tag = article_tag.select_one('a.m-largeNoteWrapper__link')
+    author_tag = article_tag.select_one('div.o-verticalTimeLineNote__user')
+    date_tag = article_tag.select_one('div.o-verticalTimeLineNote__date')
+    like_tag = article_tag.select_one('span.pl-2.text-sm.text-text-secondary')
+
+    if not title_tag or not link_tag:
+        return None
+
+    return {
+        "id": "https://note.com" + link_tag.get('href'),
+        "title": title_tag.text.strip(),
+        "url": "https://note.com" + link_tag.get('href'),
+        "author": author_tag.text.strip() if author_tag else '著者不明',
+        "date": date_tag.text.strip() if date_tag else '日付不明',
+        "likes": int(like_tag.text.strip()) if like_tag and like_tag.text.strip().isdigit() else 0,
+        "link": "https://note.com" + link_tag.get('href'),
+    }
+
+
+def extract_meta_search(article_tag):
+    title_tag = article_tag.select_one('h3.m-noteBodyTitle__title')
+    link_tag = article_tag.select_one('a.m-largeNoteWrapper__link')
+    author_tag = article_tag.select_one('div.o-largeNoteSummary__userName')
+    date_tag = article_tag.select_one('div.o-largeNoteSummary__date')
+    like_tag = article_tag.select_one('span.pl-2.text-sm.text-text-secondary')
+
+    if not title_tag or not link_tag:
+        return None
+
+    return {
+        "id": "https://note.com" + link_tag.get('href'),
+        "title": title_tag.text.strip(),
+        "url": "https://note.com" + link_tag.get('href'),
+        "author": author_tag.text.strip() if author_tag else '著者不明',
+        "date": date_tag.text.strip() if date_tag else '日付不明',
+        "likes": int(like_tag.text.strip()) if like_tag and like_tag.text.strip().isdigit() else 0,
+        "link": "https://note.com" + link_tag.get('href'),
+    }
+
+
+def scrape_note_trend():
+    url = "https://note.com/topic/tech"
+    return scrape_note_articles(url, 'div.m-largeNoteWrapper__card', extract_meta_trend)
+
 
 def scrape_note(tag="AI"):
-    encoded_tag = urllib.parse.quote(tag)
-    url = f"https://note.com/search?q={encoded_tag}&context=note&mode=search"
-    articles = basic_scrape_note(url=url)
-    return articles
-    
-
-
-def scrape_note_trend(category="technology"):
-    url = f"https://note.com/topic/tech"
-
-    options = Options()
-    options.add_argument('--headless')  
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-
-    driver = webdriver.Chrome(options=options)
-
-    articles = []
-
-    try:
-        driver.get(url)
-        time.sleep(3)
-
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
-        count = 0
-        for article_tag in soup.select('div.m-largeNoteWrapper__card'):
-            if count >= 10:
-                break
-
-            title_tag = article_tag.select_one('h3.m-noteBodyTitle__title')
-            link_tag = article_tag.select_one('a.m-largeNoteWrapper__link')
-            author_tag = article_tag.select_one('div.o-verticalTimeLineNote__user')
-            date_tag = article_tag.select_one('div.o-verticalTimeLineNote__date')
-            like_tag = article_tag.select_one('span.pl-2.text-sm.text-text-secondary')
-
-            if title_tag and link_tag:
-                title = title_tag.text.strip()
-                link = "https://note.com" + link_tag.get('href')
-                author = author_tag.text.strip() if author_tag else '著者不明'
-                date = date_tag.text.strip() if date_tag else '日付不明'
-                likes = int(like_tag.text.strip()) if like_tag else 0
-
-        
-                driver.get(link)
-                time.sleep(2)
-                detail_soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-                body_container = detail_soup.select_one('div[data-name="body"]')
-
-                if body_container:
-                    paragraphs = body_container.find_all('p')
-                    if paragraphs:
-                        body_texts = [p.get_text(strip=True) for p in paragraphs]
-                        body_summary = " ".join(body_texts)
-                    else:
-                        body_summary = "(本文なし)"
-                else:
-                    body_summary = "(本文なし)"
-
-                if len(body_summary) >= 300:
-                    body_summary = body_summary[:300]
-
-                articles.append({
-                    "id": link,
-                    "title": title,
-                    "url": link,
-                    "author": author,
-                    "date": date,
-                    "body": body_summary,
-                    "likes": likes,
-                    "category": "Note"
-                })
-
-                count += 1
-
-    finally:
-        driver.quit()
-
-    return articles
+    from urllib.parse import quote
+    url = f"https://note.com/search?q={quote(tag)}&context=note&mode=search"
+    return scrape_note_articles(url, 'div.m-timelineItemWrapper__itemWrapper', extract_meta_search, limit=5)

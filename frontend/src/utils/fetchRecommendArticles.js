@@ -1,20 +1,38 @@
 import { fetchFavorites } from './fetchFavorite';
 
-export const fetchRecommendArticles = async (setQiitaArticles, setZennArticles, setNoteArticles, setFavorites, setLoading) => {
+export const fetchRecommendArticles = async (
+  setQiitaArticles,
+  setZennArticles,
+  setNoteArticles,
+  setFavorites,
+  setLoading
+) => {
   try {
-    const [qiitaRes, zennRes, noteRes, favoritesData] = await Promise.all([
+    const [qiitaRes, zennRes, noteRes, favoritesRes] = await Promise.allSettled([
       fetch('http://localhost:8000/api/recommend/qiita/').then(res => res.json()),
       fetch('http://localhost:8000/api/recommend/zenn/').then(res => res.json()),
       fetch('http://localhost:8000/api/recommend/note/').then(res => res.json()),
-      fetchFavorites(), 
+      fetchFavorites()
     ]);
 
-    setQiitaArticles(qiitaRes.articles || []);
-    setZennArticles(zennRes.articles || []);
-    setNoteArticles(noteRes.articles || []);
-    setFavorites(favoritesData || []);
+    if (qiitaRes.status === "fulfilled") {
+      setQiitaArticles(qiitaRes.value.articles || []);
+    }
+
+    if (zennRes.status === "fulfilled") {
+      setZennArticles(zennRes.value.articles || []);
+    }
+
+    if (noteRes.status === "fulfilled") {
+      setNoteArticles(noteRes.value.articles || []);
+    }
+
+    if (favoritesRes.status === "fulfilled") {
+      setFavorites(favoritesRes.value || []);
+    }
+
   } catch (err) {
-    console.error('データ取得エラー:', err);
+    console.error("Error Occured:", err);
   } finally {
     setLoading(false);
   }
